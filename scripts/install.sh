@@ -1,6 +1,7 @@
 #!/bin/bash
 
 REPO="DraftShift/klipper-toolchanger.git"
+BRANCH="develop"
 SERVICE="/etc/systemd/system/ToolChanger.service"
 CONFIG_PATH="${HOME}/printer_data/config"
 KLIPPER_PATH="${HOME}/klipper"
@@ -42,7 +43,7 @@ function check_download {
 
     if [ $doclone -gt 0 ]; then
         echo -n "[DOWNLOAD] Cloning repository..."
-        if git -C $installdirname clone https://github.com/${REPO} $installbasename; then
+        if git -C $installdirname clone -b ${BRANCH} https://github.com/${REPO} $installbasename; then
             chmod +x ${INSTALL_PATH}/scripts/install.sh
             echo " complete!"
         else
