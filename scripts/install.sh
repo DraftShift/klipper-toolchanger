@@ -236,8 +236,9 @@ if [ $doinstall -gt 0 ]; then
         restart_klipper
     fi
 
-    printf "=============================================\n"
-    echo "- If you are upgrading make sure to           -"
-    echo "- check for changes in the user config files  -"
-    printf "=============================================\n\n"
+    printf "======================================\n"
+    echo "- If you are upgrading maybe sure to -"
+    echo "- you check for changes in the user  -"
+    echo "- config files                       -"
+    printf "======================================\n\n"
 fi
