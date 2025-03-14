@@ -49,7 +49,7 @@ wget -O - https://raw.githubusercontent.com/Stealthchanger/klipper-toolchanger/m
 - [calibrate-offsets.cfg](examples/calibrate-offsets.cfg)
 - [calibrate-offsets-macros.cfg](macros/calibrate-offsets-macros.cfg)
 
-**Optional** for hotend fan rpm detection (requires all hotends to be configured with tachometer)
+**Optional** for hotend fan rpm detection (requires all hotend fans to be configured with tachometer)
 - [toolchanger-fan-stall-detect.cfg](examples/toolchanger-fan-stall-detect.cfg)
 
 [PRINT_START slicer info](PRINT_START.md)
