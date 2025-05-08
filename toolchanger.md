@@ -145,7 +145,9 @@ All gcode macros below have the following context available:
 # gcode_z_offset: 0
   # The XYZ gcode offset of the toolhead. If set, overrides offset defined 
   # by the parent. If set, even to 0, indicates the offset on that axis is 
-  # relevant for this tool and any adjustments will be attributed to this tool.  
+  # relevant for this tool and any adjustments will be attributed to this tool.
+# resonance_chip:
+  # The device to use for resonance testing when this tool is active.
 # params_*: 
   # Extra params to pass to pickup/dropoff gcode. Accessible in the gcode via
   # `tool.params_name`.

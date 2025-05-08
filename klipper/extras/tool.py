@@ -45,6 +45,7 @@ class Tool:
         self.extruder = None
         self.extruder_stepper = None
         self.fan_name = self._config_get(config, 'fan', None)
+        self.resonance_chip = self._config_get(config, 'resonance_chip', None)
         self.fan = None
         self.t_command_restore_axis = self._config_get(
             config, 't_command_restore_axis', 'XYZ')
@@ -84,6 +85,7 @@ class Tool:
                 'gcode_x_offset': self.gcode_x_offset if self.gcode_x_offset else 0.0,
                 'gcode_y_offset': self.gcode_y_offset if self.gcode_y_offset else 0.0,
                 'gcode_z_offset': self.gcode_z_offset if self.gcode_z_offset else 0.0,
+                'resonance_chip': self.resonance_chip if self.resonance_chip else '',
                 }
 
     def get_offset(self):
@@ -121,6 +123,7 @@ class Tool:
     def activate(self):
         toolhead = self.printer.lookup_object('toolhead')
         gcode = self.printer.lookup_object('gcode')
+        resonance_tester = self.printer.lookup_object('resonance_tester')
         hotend_extruder = toolhead.get_extruder().name
         if self.extruder_name and self.extruder_name != hotend_extruder:
             gcode.run_script_from_command(
@@ -134,6 +137,9 @@ class Tool:
         if self.fan_name[:9] == 'multi_fan':
             gcode.run_script_from_command(
                 "ACTIVATE_FAN FAN='%s'" % (self.fan.name,))
+        if self.resonance_chip and resonance_tester:
+            resonance_tester.accel_chip_names = [["xy",self.resonance_chip]]
+        
     def deactivate(self):
         if self.extruder_stepper:
             toolhead = self.printer.lookup_object('toolhead')
