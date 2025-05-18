@@ -149,23 +149,20 @@ class ProbeSessionHelper:
         retries = 0
         positions = []
         sample_count = params['samples']
-        first_probe = True
+        if check_drop and self.drop_first_result:
+                self._run_settling_probe(gcmd)
         while len(positions) < sample_count:
             # Probe position
-            pos = self._probe(params['probe_speed'])
-            if check_drop and self.drop_first_result and first_probe:
-                gcmd.respond_info("dropping probe result, settling")
-            else:
-                positions.append(pos)
-                # Check samples tolerance
-                z_positions = [p[2] for p in positions]
-                if max(z_positions)-min(z_positions) > params['samples_tolerance']:
-                    if retries >= params['samples_tolerance_retries']:
-                        raise gcmd.error("Probe samples exceed samples_tolerance")
-                    gcmd.respond_info("Probe samples exceed tolerance. Retrying...")
-                    retries += 1
-                    positions = []
-            first_probe = False
+            pos = self._probe(params['probe_speed'])            
+            positions.append(pos)
+            # Check samples tolerance
+            z_positions = [p[2] for p in positions]
+            if max(z_positions)-min(z_positions) > params['samples_tolerance']:
+                if retries >= params['samples_tolerance_retries']:
+                    raise gcmd.error("Probe samples exceed samples_tolerance")
+                gcmd.respond_info("Probe samples exceed tolerance. Retrying...")
+                retries += 1
+                positions = []
             # Retract
             if len(positions) < sample_count:
                 toolhead.manual_move(
@@ -174,6 +171,14 @@ class ProbeSessionHelper:
         # Calculate result
         epos = probe.calc_probe_z_average(positions, params['samples_result'])
         self.results.append(epos)
+    def _run_settling_probe(self, gcmd):
+        toolhead = self.printer.lookup_object('toolhead')        
+        probexy = toolhead.get_position()[:2]
+        speed = gcmd.get_float("SETTLING_SPEED", self.speed, above=0.)
+        pos = self._probe(speed)
+        # Retract after settling
+        toolhead.manual_move(probexy + [pos[2] + self.sample_retract_dist], self.lift_speed)
+        gcmd.respond_info("dropping probe result, settling")
     def pull_probed_results(self):
         res = self.results
         self.results = []
